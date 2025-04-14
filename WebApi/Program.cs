@@ -2,6 +2,7 @@ using Business.Services;
 using Data.Contexts;
 using Data.Repositories;
 using Microsoft.EntityFrameworkCore;
+using WebApi.Extensions.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -22,7 +23,12 @@ builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer(builder.Configura
 var app = builder.Build();
 app.MapOpenApi();
 app.UseHttpsRedirection();
+
+app.UseMiddleware<DefaultApiKeyMiddleware>();
+
 app.UseAuthorization();
+app.UseAuthentication();
+
 app.MapControllers();
 app.UseCors(x => x.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
 
